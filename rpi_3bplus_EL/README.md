@@ -1,17 +1,15 @@
 # Embedded Linux using Linaro Toolchain
 
-If either a Embedded Linux or a bare metal OS, we need tool chain, that 
-compile and produce the binary code of application, OS.
+If either an Embedded Linux or a bare metal OS, we need a toolchain, that
+compile and produce the binary code of the application, OS.
 
-In order to not complicate much but still some details, we will use the linaro gcc toolchain 
+To not complicate it much but still have some details, we will use the Linaro GCC toolchain
 for arm architecture.
 
-Before optaining the toolchain, if you feel to update, and upgrade your system (I will refer here after HOST), 
+Before obtaining the toolchain, if you feel to update, and upgrade your system (I will refer hereafter to HOST),
 update it and then follow the commands.
 
-
 It is recommended to perform all the following actions under */home/your_project_path*
-
 
 ## Folder Structure
 
@@ -24,7 +22,7 @@ It is recommended to perform all the following actions under */home/your_project
 - `Makefile`: Top-level Makefile for automated building.
 
 
-Downloading a pre build tool chain from linaro and extract toolchain:
+## Downloading a pre-build toolchain from Linaro and extract toolchain
 ```bash
 mkdir -p toolchain
 cd toolchain
@@ -34,7 +32,7 @@ export PATH=/home/your_project_path/toolchain/gcc-linaro-7.5.0-2019.12-x86_64_aa
 cd ../
 ```
 
-Clone and Build U-Boot for generating bootloader
+## Clone and Build U-Boot
 ```bash
 mkdir -p bootloader
 cd bootloader
@@ -44,11 +42,10 @@ make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- rpi_3_b_plus_defconfig
 make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
 cd ../../
 ```
-I recommend to replace *-j$(nproc)* by *-j x/2* if you using a laptop with x cores, If you using a desktop it is okay to use 
-the full cores i.e *-j$(nproc)*. I personally tested it, for laptop its better to use lesser number of processor cores.
+I recommend replacing *-j$(nproc)* by *-j x/2* if you're using a laptop with x cores, If you're using a desktop it is okay to use
+the full cores i.e. *-j$(nproc)*. I tested it, and for a laptop, it's better to use a lesser number of processor cores.
 
-
-Clone and Build Linux kernel
+## Clone and Build Linux kernel
 ```bash
 mkdir -p kernel
 cd kernel
@@ -59,7 +56,7 @@ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
 cd ../../
 ```
 
-Download and Extract buildroot
+## Download and Extract buildroot
 ```bash
 mkdir -p rootfs
 cd rootfs
@@ -68,55 +65,47 @@ tar -xf buildroot-2024.02.2.tar.gz
 cd buildroot-2024.02.2
 make raspberrypi3_64_defconfig
 ```
-Note: buildroot itself able to produce toolchain, bootloader, linux kernel and rootfile system, the reason why we doing this way
-is first introducing ourself what are the components involved in building embedded linux. Because, once we move from here to 
-work on custom board and software, we will work to fine tune the toolchain, and kernel.
+Note: *Buildroot* itself can produce a toolchain, bootloader, Linux kernel, 
+and root file system, the reason why we perform all the details ourselves is to get familiarized with embedded Linux.  Because once we move from here to
+work on custom boards and software, we will work to fine-tune (in the sense that choosing the requirements for the project/application) the toolchain and kernel.
 
-
-After executing the last steps, now its our time to set up the receipe on how to build our rootfs!.
+It's our time to set up the recipe to build our root file system.
 
 ```bash
 make menuconfig
 ```
-It appreas a graphica menu bar to choose various receipe for the root file system
+Appears a graphic menu bar to choose various recipes for the root file systemMake sure that the Target option is as  <br />
+*Target Architecture* (AArch64 (little endian)) ---> <br />
+*Target Architecture* Variant (cortex-A53) --->  <br />
+Our *Rasberry pi-3b+* is an arm 64-bit little endian format broadcom processor.  <br />
+In the *Toolchain* option, choose Toolchain type as External toolchain,  <br />
+In the *Toolchain external options*: Toolchain as Custom toolchain,  <br />
+Toolchain origin as Pre-installed toolchain, because we already downloaded Linaro toolchain  <br />
+and set Toolchain path as (*/home/your_project_path//toolchain/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu*)  <br />
+The Toolchain prefix is set as *aarch64-linux-gnu* <br />
 
-Make sure that the *Target option* as  <br />
-Target Architecture (AArch64 (little endian))  --->  <br />
-Target Architecture Variant (cortex-A53)  --->       <br />
+Our downloaded Linaro toolchain has some specific properties, <br />
+choose External toolchain gcc version as *7.x*,  <br />
+External toolchain kernel headers series as *4.10.x*,  <br />
+External toolchain C library as *glibc*  <br />
+Make sure you enable *Toolchain SSP, RPC, Fortron, OpemMb, and C++*. <br />
+These all are present in the Linaro toolchain. And also disable the rest. 
+There is nothing to change in *Build Options*,
 
-Our *rasberry pi-3b+* is arm 64 bit little endian format processor.
-
-
-In *Toolchain* option, choose Toolchain type as External toolchain, <br />
-toolchain external options: Toolchain as Custom toolchain, <br />
-Toolchain origin as Pre-installed toolchain, because we already downloaded linaro toolchain <br />
-and set Toolchain path as *(/home/your_project_path//toolchain/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu)* <br />
-The Toolchain prefix set as *aarch64-linux-gnu* <br />
-Our downloaded linaro tool chain has some specific property,  <br />
-choose  External toolchain gcc version as *7.x*,   <br />
-External toolchain kernel headers series as  *4.10.x*,  <br /> 
-External toolchain C library as *glibc* <br />
-And make sure you enable Toolchain *SSP,RPC, Fortron, OpemMb, and C++* These all are present in the linaro toolchain. And also enable all the rest.
+In *system configuration* options, make sure the Custom scripts to run after creating filesystem images are empty, 
+i.e. remove the string if it's there. 
 
 
-There is nothing to change in *Build Options*, 
+In Kernel disable the Linux Kernel, since we already build a Linux kernel.  <br />
+And finally ensure that in File System images *ext2/3/4* root filesystem, *ext4* is enabled.  <br />
+Once the chosen parameters are, the selected configuration is stored in the same folder with a hidden file name *.config*, now run
 
-In system configuration options, 
-make sure *Custom scripts to run after creating filesystem images* is empty, i.e remove string if its there. <br />
-
-In Kernel disable the Linux Kernel, since we already build a Linux kernel.
-
-And finally ensure that in *File System images* ext2/3/4 root filesystem, ext4 is enabled.
-
-Once saved the choosen prameter, the selected configuration stored in the same folder hidden file name *.config*
-
-now run 
 ```bash
 make
 ```
-I have created a Makefile, there change only the *toolchain_dir*, if you had similar folder structure, it should work fine!
+I have created a Makefile, changing only the *toolchain_dir*, if you had a similar folder structure, it should work fine!
 
-If you opt to use make file, before using make file, do the followings
+If you opt to use make file, before using make file, do the following
 ```bash
 mkdir -p toolchain
 mkdir -p kernel
@@ -141,12 +130,12 @@ make rootfs // here you should choose the buildroot configuration as dicussed ea
 make sdcard // finally collect Image, rootfs.ext4, kernel8.img, rasperrypi device tree blob (dtb) the required files and put in one folder
 ```
 
-The Raspberry Pi starts execution in the GPU core with a first stage boot loader in the boot ROM. 
+The Raspberry Pi starts execution in the GPU core with a first-stage boot loader in the boot ROM.
 It then passes control over to a file named *bootcode.bin* located in a FAT partition.
-This represents a second stage boot loader. 
-It’s main purpose is setting up the *SDRAM* and jumping to a third-stage bootloader named *start.elf*
-(along with its counterpart ‘fixup.dat’) that is also located on the FAT partition. 
-This *start.elf* has the ability to start the CPU core and boot our kernel or bootloader image.
+This represents a second-stage bootloader.
+Its main purpose is setting up the *SDRAM* and jumping to a third-stage bootloader named *start.elf*
+(along with its counterpart ‘fixup.dat’) that is also located on the FAT partition.
+This *start.elf* can start the CPU core and boot our kernel or bootloader image.
 
 These files are collected from the appropriate firmware. If you use the terminal command instead of make file,
 then follow these steps
@@ -168,8 +157,11 @@ arm_64bit=1
 core_freq=250
 
 cp config.txt sdcard/boot/
+```
 
+Now, collect all the compiled file and place them on the real sdcard
 
+```bash
 // create a sd card layout like this
 cat sdlayout
 label: dos
@@ -179,12 +171,17 @@ unit: sectors
 
 /dev/sdb1 : start=        2048, size=      524288, type=c, bootable
 /dev/sdb2 : start=      526336, size=    29726687, type=83
-// the sd card might appear differently in your system, it could be /dev/sda or /dev/mmcblk0, change accordingly in file also in the command
+
+//The SD card might appear differently in your system, 
+//it could be /dev/sda or /dev/mmcblk0, change accordingly in the file and also in the following command
+
 sudo sfdisk /dev/sdb < sdlayout
 sudo mkfs.vfat /dev/sdb1
 sudo mkfs.ext4 /dev/sdb2
 sudo dd if=sdcard/rootfs.ext4 of=/dev/sdb2 bs=4M
-// say your /dev/sdb1 is mounted as /media/username/abcd-1234/, check this by lsblk, if its not mounted use sudo mount /dev/sdb1 /media/../..
+
+// say your /dev/sdb1 is mounted as /media/username/abcd-1234/, check this by lsblk, 
+// if its not mounted then use sudo mount /dev/sdb1 /media/../..
 
 cp sdcard/boot/*  /media/username/abcd-1234/ 
 sudo sync
@@ -192,36 +189,49 @@ sudo eject /dev/sdb
 ```
 
 
-Note, what we did so far is we prepared the linux kernel with root file system partition on the sdcard, insert the sdcard, connect first RS232 connected,
- and then open your screen
+Now inser the sdcard on the rasberry pi board, connect RS232 USB cable, USB on the Laptop side, 
+and uart wires on the GPIO pins (6 - Common Gnd Pin, 8- *UART0_RXT* for the board, *TXT* for the computer, 10- *UART0_TXT* for the board, *RXD* for the computer).
+
+Dont yet the board power up, first connect the computer to this USB cable.
+
 ```bash
 sudo apt-get install screen
-// insert your rs232 usb cable converted
-type ls -l /dev/ttyUSB0 // keep simple, have only one rs232 UBS connected
+// insert your rs232 usb cable converter
+ls -l /dev/ttyUSB0 // keep simple, have only one rs232 USB connected
+
 id
-// if it shows dialout then dont worry, otherwise
+
+// if it shows dialout then move on o.w, follow this procedure
 sudo usermod -a -G dialout username
 newgrp dialout
-// now check, if it shows 
+
+// now check
 id
 // for me 
 uid=1000(abdul) gid=1000(abdul) groups=1000(abdul),4(adm),20(dialout),27(sudo),121(lpadmin)
+
 ls -l /dev/ttyUSB0
 crw-rw---- 1 root dialout 188, 0 May 23 03:03 /dev/ttyUSB0
 
 sudo screen /dev/ttyUSB0 115200
 
 
-
 // after some time, the boot command appears, do the following
 U-Boot> setenv kernel_addr_r 0x80000
-U-Boot> setenv fdt_addr_r 0x3000000 // make sure this one is larger so that kernel can hold on inbetween 0x80000 to 0x3000000-1
+U-Boot> setenv fdt_addr_r 0x3000000 
+
+//Make sure the above fdt_addr_r is large enough to hold the kernel image file within the address range 0x80000 to 0x3000000-1
+// follow the message from U-Boot carefully,
+// I accidentally put it smaller and spent some hours to understand it
+
 U-Boot> setenv bootcmd 'fatload mmc 0:1 ${kernel_addr_r} Image; fatload mmc 0:1 ${fdt_addr_r} bcm2837-rpi-3-b-plus.dtb; booti ${kernel_addr_r} - ${fdt_addr_r}'
 U-Boot> saveenv
-// it should print something back to you OK, ow there is some problem
+
+// it should print something back to you OK after saving the provided parameters
+
 U-Boot> boot
 // after some time
-// you can use the rasberrypi purely on the terminal 
+// you can use the rasberrypi on terminal 
 # ls -a
 ...
 
