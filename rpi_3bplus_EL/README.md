@@ -244,5 +244,29 @@ U-Boot> boot
 // you can use the rasberrypi on terminal 
 # ls -a
 ...
+# ls ../
+bin         lib         lost+found  opt         run         tmp
+dev         lib64       media       proc        sbin        usr
+etc         linuxrc     mnt         root        sys         var
+# uname -a
+Linux buildroot 6.9.0-11002-g29c73fc794c8 #1 SMP PREEMPT Wed May 22 16:17:13 CEST 2024 aarch64 GNU/Linux
+...
+#poweroff
+# Stopping network: ifdown: interface eth0 not configured
+OK
+Stopping klogd: OK
+Stopping syslogd: OK
+Seeding 256 bits and crediting
+Saving 256 bits of creditable seed for next boot
+umount: devtmpfs busy - remounted read-only
+[  177.630249] EXT4-fs (mmcblk0p2): re-mounted 6fde13d3-0cac-47cf-89d3-c925e3256926 ro. Quota mode: none.
+The system is going down NOW!
+Sent SIGTERM to all processes
+Sent SIGKILL to[  179.671317] kvm: exiting hardware virtualization
+[  179.676065] reboot: Power down
 
 ```
+
+exit from the screen window by typing ctrl+shift+A, followed by k, then type y on the terminal, it will safely close the screen.
+Note: First insert the SD card, and USB RS232 cable, initialize the screen on the host terminal, and then only plug in the power resources to the
+Raspberry Pi board (5V adapter recommended). So, that we know what is happening when *Ras Pi* boots up.
