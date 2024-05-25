@@ -130,12 +130,20 @@ make rootfs // here you should choose the buildroot configuration as dicussed ea
 make sdcard // finally collect Image, rootfs.ext4, kernel8.img, rasperrypi device tree blob (dtb) the required files and put in one folder
 ```
 
-The Raspberry Pi starts execution in the GPU core with a first-stage boot loader in the boot ROM.
-It then passes control over to a file named *bootcode.bin* located in a FAT partition.
-This represents a second-stage bootloader.
-Its main purpose is setting up the *SDRAM* and jumping to a third-stage bootloader named *start.elf*
-(along with its counterpart ‘fixup.dat’) that is also located on the FAT partition.
-This *start.elf* can start the CPU core and boot our kernel or bootloader image.
+
+## Boot Process of Raspberry Pi:
+- Initial Bootloader (in ROM)
+  - It initialize the *Ras Pi* GPU and SDRAM, it is hardcoded in *Ras Pi*'s GPU.
+- Secondary Bootloader (in sdcard)
+  - It looks for FAT32 partiion on the sd card, and loads *bootcode.bin* file from this FAT32 Partition
+- Loading Firmware (in sdcard)
+  - *bootcode.bin* loads *start.elf* file, which is the main firmware for the GPU, it further initialize the system and 
+    loads *config.txt* file
+- Loading Kernel or binary executable file as Image
+  - The firmware then loads the kernel image, typically named as *kernel8.img* for *ARM64* from the same FAT32 partition.
+
+
+We build our own *kernel8.img*, here, but we use all the rest of the boot loading process from the *Ras Pi* firmware files.
 
 These files are collected from the appropriate firmware. If you use the terminal command instead of make file,
 then follow these steps
@@ -188,6 +196,8 @@ sudo sync
 sudo eject /dev/sdb
 ```
 
+
+## Booting Raspberry board via RS232 Cable
 
 Now inser the sdcard on the rasberry pi board, connect RS232 USB cable, USB on the Laptop side, 
 and uart wires on the GPIO pins (6 - Common Gnd Pin, 8- *UART0_RXT* for the board, *TXT* for the computer, 10- *UART0_TXT* for the board, *RXD* for the computer).
