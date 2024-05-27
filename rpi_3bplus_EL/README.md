@@ -235,6 +235,7 @@ U-Boot> setenv fdt_addr_r 0x3000000
 // I accidentally put it smaller and spent some hours to understand it
 
 U-Boot> setenv bootcmd 'fatload mmc 0:1 ${kernel_addr_r} Image; fatload mmc 0:1 ${fdt_addr_r} bcm2837-rpi-3-b-plus.dtb; booti ${kernel_addr_r} - ${fdt_addr_r}'
+U-Boot> setenv bootargs 'console=ttyS1,115200 root=/dev/mmcblk0p2 rw rootwait'
 U-Boot> saveenv
 
 // it should print something back to you OK after saving the provided parameters
