@@ -6,31 +6,40 @@
 
 #include "mmio.h"
 
-
 void uart_init()
 {
+	register unsigned int r;
 
-  mmio_write(AUX_ENABLES, 0x1);          // Enable mini UART
-  mmio_write(AUX_MU_IER_REG, 0x0);       // Disable interrupts
-  mmio_write(AUX_MU_IIR_REG, 0xc6);      // Disable interrupts
-  mmio_write(AUX_MU_CNTL_REG, 0x0);      // Disable transmitter and receiver
-  mmio_write(AUX_MU_LCR_REG, 0x3);       // 8-bit mode
-  mmio_write(AUX_MU_MCR_REG, 0x0);       // RTS line
-  mmio_write(AUX_MU_BAUD_REG, 0x10E);    // 115200 baud rate, 270
-
-  uint32_t ra = mmio_read(GPFSEL1);
-  ra &= ~((7 << 12) | (7 << 15));      // Clear GPIO 14 and 15
-  ra |= (2 << 12) | (2 << 15);         // Set GPIO 14 and 15 to ALT5
-  mmio_write(GPFSEL1, ra);
-
-  mmio_write(GPPUD, 0);                // Disable pull-up/down
-  for (int i = 0; i < 150; i++) { asm volatile("nop"); } // delay for 150 clocks
-  mmio_write(GPPUDCLK0, (1 << 14) | (1 << 15));
-  for (int i = 0; i < 150; i++) { asm volatile("nop"); } // delay for 150 clocks
-  mmio_write(GPPUDCLK0, 0);
-  mmio_write(AUX_MU_CNTL_REG, 0x3);      // Enable transmitter and receiver
-
+	/* initialize UART */
+	*AUX_ENABLE |=1;       // Enable mini UART (1)
+	*AUX_MU_CNTL = 0;			 // Disable transmitter and receiver
+	*AUX_MU_LCR = 3;       // 8 bit mode
+	*AUX_MU_MCR = 0;       // RTS line
+	*AUX_MU_IER = 0;       // Disable interrupts
+	*AUX_MU_IIR = 0xc6;    // Disable interrupts
+	*AUX_MU_BAUD = 270;    // 115200 baud rate, 
+	/* map UART1 to GPIO pins */
+	r=*GPFSEL1;
+	r&=~((7<<12)|(7<<15)); // Clear GPIO 14, 15
+	r|=(2<<12)|(2<<15);    // Alt5
+	*GPFSEL1 = r;
+	*GPPUD = 0;            // Enable pins 14 and 15
+	
+	r=150; while(r--) { asm volatile("nop"); }
+	*GPPUDCLK0 = (1<<14)|(1<<15);
+	r=150; while(r--) { asm volatile("nop"); }
+	*GPPUDCLK0 = 0;        // flush GPIO setup
+	*AUX_MU_CNTL = 3;      // enable Tx, Rx
 }
+
+
+unsigned char uart_getc()
+{
+    /* wait until something is in the buffer */
+    do { asm volatile("nop"); }while( !(*AUX_MU_LSR & 0x01) );
+    return (unsigned char)(*AUX_MU_IO);
+}
+
 
 
 void uart_putc(unsigned char c)
@@ -39,14 +48,22 @@ void uart_putc(unsigned char c)
   * wait for the LSR (previous action) to ready for the current action
   * send a character to the IO register,
   */
-  while (!(mmio_read(AUX_MU_LSR_REG) & 0x20));
-  mmio_write(AUX_MU_IO_REG, c);
+  do { asm volatile("nop"); }while ( !(*AUX_MU_LSR & 0x01) );
+  *AUX_MU_IO=c;
 }
+
 
 void uart_puts(const char *str)
 {
   while (*str)
-  {
-    uart_putc(*str++);
+  {	
+		if (*str == '\n') 
+		{ uart_putc('\r');
+			str++;
+		} else 
+		{
+    	uart_putc(*str++);
+		}
   }
 }
+
