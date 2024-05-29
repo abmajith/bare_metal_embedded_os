@@ -43,10 +43,11 @@ To start our embedded OS development process, we will first look into two differ
 ways to establish a primitive serial console communication between the host (our personal computer) 
 and target (our Raspberry Pi board).
 
-We have two demos one for *UART1*  <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloUART" class="custom-link">Hello UART1</a>
-and another for *UART0* <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloMAILBOXUART" class="custom-link">Hello UART0 Mailbox</a>
+We have two demos one for *UART1*: <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloUART" class="custom-link">Hello UART1</a>
+and another for *UART0*: <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloMAILBOXUART" class="custom-link">Hello UART0 Mailbox</a>
 in the current folder. 
 
 Once we have successfully seen a serial console message in the host computer,
-we will head to list the memory-mapped I/O (MMIO) addresses for the Raspberry Pi 3 B+ and its peripherals.
+we will head to list the memory-mapped I/O (MMIO) addresses for the 
+<a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloMAILBOXUART" class="custom-link">Raspberry Pi 3 B+ and its peripherals</a>
 
