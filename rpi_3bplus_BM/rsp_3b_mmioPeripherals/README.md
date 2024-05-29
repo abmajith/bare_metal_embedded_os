@@ -25,11 +25,14 @@ A picture is worth 1000 words!
 
 So far we have listed the basic peripherals, 
 not mentioned yet USB ports, HDMI ports, audio ports, 
-LAN cables, Display modules, and Camera modules.
+LAN cables, Display modules, Camera modules, etc.
 
 As you see, this Rasberry Pi is a personal computer, 
 when we install a Debian-based Linux and connect it with other computer accessories. 
 
-What are we doing here? we are using a widely available 
-and cheap processor board to get hands-on experience with embedded OS 
-and the development process.
+
+For the sake of completness, let's list all the accessories ports and peripherals
+<img src="https://github.com/abmajith/bare_metal_embedded_os/blob/main/rpi_3bplus_BM/rsp_3b_mmioPeripherals/raspi3bplus_detailed.jpg" alt="J" width="1200"/>
+
+
+
