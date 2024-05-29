@@ -49,5 +49,5 @@ in the current folder.
 
 Once we have successfully seen a serial console message in the host computer,
 we will head to list the memory-mapped I/O (MMIO) addresses for the 
-<a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloMAILBOXUART" class="custom-link">Raspberry Pi 3 B+ and its peripherals</a>
+<a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/rsp_3b_mmioPeripherals" class="custom-link">Raspberry Pi 3 B+ and its peripherals</a>
 
