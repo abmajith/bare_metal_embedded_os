@@ -60,23 +60,23 @@ Let's define the base address of important peripherals in a header file as
 #define MMIO_BASE       0x3F000000
 
 // Peripheral base addresses
-#define INTERRUPT_BASE	(MMIO_BASE + 0x0000B000)	// Interrupt Controller
-#define RNG_BASE				(MMIO_BASE + 0x00104000)	// Random Number Generator Base
-#define GPIO_BASE				(MMIO_BASE + 0x00200000)	// GPIO Base
-#define UART0_BASE			(MMIO_BASE + 0x00201000)	// UART0 (serial port, PL011)
-#define UART1_BASE			(MMIO_BASE + 0x00215000)	// UART1 (serial port, AUX mini UART)
-#define MAILBOX_BASE		(MMIO_BASE + 0x0000B880)	// Mailbox Interface
-#define TIMER_BASE			(MMIO_BASE + 0x00003000)	// System Timer
-#define POWER_MNG_BASE	(MMIO_BASE + 0x00100000)	// Power Management base
+#define INTERRUPT_BASE  (MMIO_BASE + 0x0000B000)  // Interrupt Controller
+#define RNG_BASE        (MMIO_BASE + 0x00104000)  // Random Number Generator Base
+#define GPIO_BASE       (MMIO_BASE + 0x00200000)  // GPIO Base
+#define UART0_BASE      (MMIO_BASE + 0x00201000)  // UART0 (serial port, PL011)
+#define UART1_BASE      (MMIO_BASE + 0x00215000)  // UART1 (serial port, AUX mini UART)
+#define MAILBOX_BASE    (MMIO_BASE + 0x0000B880)  // Mailbox Interface
+#define TIMER_BASE      (MMIO_BASE + 0x00003000)  // System Timer
+#define POWER_MNG_BASE  (MMIO_BASE + 0x00100000)  // Power Management base
 
 
-#define I2C0_BASE				(MMIO_BASE + 0x00205000)	// I2C0 Controller
-#define I2C1_BASE				(MMIO_BASE + 0x00804000)  // I2C1 Controller
-#define I2C2_BASE				(MMIO_BASE + 0x00805000)  // I2C2 Controller
+#define I2C0_BASE       (MMIO_BASE + 0x00205000)  // I2C0 Controller
+#define I2C1_BASE       (MMIO_BASE + 0x00804000)  // I2C1 Controller
+#define I2C2_BASE       (MMIO_BASE + 0x00805000)  // I2C2 Controller
 
-#define SPI0_BASE				(MMIO_BASE + 0x00204000)	// SPI0 Controller
-#define SPI1_BASE				(MMIO_BASE + 0x00215080)  // SPI1 Controller
-#define SPI2_BASE				(MMIO_BASE + 0x002150C0)  // SPI2 Controller
+#define SPI0_BASE       (MMIO_BASE + 0x00204000)  // SPI0 Controller
+#define SPI1_BASE       (MMIO_BASE + 0x00215080)  // SPI1 Controller
+#define SPI2_BASE       (MMIO_BASE + 0x002150C0)  // SPI2 Controller
 
 #endif // MMIO_H
 ```
