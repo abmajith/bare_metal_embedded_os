@@ -31,7 +31,7 @@ As you see, this Rasberry Pi is a personal computer,
 when we install a Debian-based Linux and connect it with other computer accessories. 
 
 
-For the sake of completeness, let's list all the accessories ports and peripherals
+For the sake of completeness, let's list all the accessories ports, and peripherals
 <img src="https://github.com/abmajith/bare_metal_embedded_os/blob/main/rpi_3bplus_BM/rsp_3b_mmioPeripherals/raspi3bplus_detailed.jpg" alt="J" width="1200"/>
 
 
