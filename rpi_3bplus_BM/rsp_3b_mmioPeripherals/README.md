@@ -47,8 +47,6 @@ Ras Pi 3B+ uses a 32-bit address space. The total addressable space is 4 GB (0x0
 	-	0x3F202000 - 0x3F202FFF: UART1
 	-	0x3F00B880 - 0x3F00B8FF: Mailbox Interface
 	-	0x3F003000 - 0x3F00300F: System Timer
-	-	0x3F100000 - 0x3F100027: USB Controller
-	-	0x3F980000 - 0x3F9800FF: SDHOST (SD Card Host Controller)
 	-	0x3F101000 - 0x3F101FFF: I2C and SPI Controllers
 
 
@@ -60,14 +58,14 @@ Let's define the base address of important peripherals in a header file as
 #define MMIO_BASE       0x3F000000
 
 // Peripheral base addresses
+#define TIMER_BASE      (MMIO_BASE + 0x00003000)  // System Timer
 #define INTERRUPT_BASE  (MMIO_BASE + 0x0000B000)  // Interrupt Controller
+#define MAILBOX_BASE    (MMIO_BASE + 0x0000B880)  // Mailbox Interface
+#define POWER_MNG_BASE  (MMIO_BASE + 0x00100000)  // Power Management base
 #define RNG_BASE        (MMIO_BASE + 0x00104000)  // Random Number Generator Base
 #define GPIO_BASE       (MMIO_BASE + 0x00200000)  // GPIO Base
 #define UART0_BASE      (MMIO_BASE + 0x00201000)  // UART0 (serial port, PL011)
 #define UART1_BASE      (MMIO_BASE + 0x00215000)  // UART1 (serial port, AUX mini UART)
-#define MAILBOX_BASE    (MMIO_BASE + 0x0000B880)  // Mailbox Interface
-#define TIMER_BASE      (MMIO_BASE + 0x00003000)  // System Timer
-#define POWER_MNG_BASE  (MMIO_BASE + 0x00100000)  // Power Management base
 
 
 #define I2C0_BASE       (MMIO_BASE + 0x00205000)  // I2C0 Controller
