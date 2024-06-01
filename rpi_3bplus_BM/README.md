@@ -34,7 +34,6 @@ wget https://github.com/raspberrypi/firmware/raw/master/boot/start.elf
 
 By doing this way, we consistently make the constant toolchain and firmware throughout our project development.
 
-
 We are ready to create subfolders and develop typical embedded applications related to protocols and OS modules.
 Here we have a few test cases, that will progress day by day!
 
@@ -43,6 +42,7 @@ To start our embedded OS development process, we will first look into two differ
 ways to establish a primitive serial console communication between the host (our personal computer) 
 and target (our Raspberry Pi board).
 
+
 We have two demos one for *UART1*: <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloUART" class="custom-link">Hello UART1</a>
 and another for *UART0*: <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloMAILBOXUART" class="custom-link">Hello UART0 Mailbox</a>
 in the current folder. 
@@ -50,4 +50,11 @@ in the current folder.
 Once we have successfully seen a serial console message in the host computer,
 we will head to list the memory-mapped I/O (MMIO) addresses for the 
 <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/rsp_3b_mmioPeripherals" class="custom-link">Raspberry Pi 3 B+ and its peripherals</a>
+
+After having an abstract understanding of the memory-mapped I/O peripherals and ports, 
+we will examine <a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloPeripheralSimplePartOne" class="custom-link">simple peripheral interfaces </a>
+including random number generations, delays (polling type), 
+and power management interface. 
+
+We are mostly following the intellectual guidance on how to develop a small embedded kernel, it is a well-documented and followed path in the embedded world.                                 I mostly follow the book "Programming Embedded Systems" by Michael Barr.
 
