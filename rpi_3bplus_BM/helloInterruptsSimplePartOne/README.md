@@ -10,7 +10,7 @@ which is more practical than the ARMv8 reference manual (really big!).
 As we know, *Ras pi 3b plus* has Broadcom 2837 a cortex A57 A profile ARM processor, based on  ARMv8 architecture.
 
 
-<img src="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/helloInterruptsSimplePartOne/exceptionsLevel.png" alt="J" width="400"/>
+![](exceptionsLevel.png)
 
 As you see, the armv8-based architecture has 4 levels of exceptions.
 
