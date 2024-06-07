@@ -56,5 +56,8 @@ we will examine <a href="https://github.com/abmajith/bare_metal_embedded_os/tree
 including random number generations, delays (polling type), 
 and power management interface. 
 
+We will move on to interrupt, I feel that to understand interrupt alone, I created a simple hello interrupt folder in 
+<a href="https://github.com/abmajith/bare_metal_embedded_os/tree/main/rpi_3bplus_BM/simpleInterrupt" class="custom-link">simple Interrupt </a>
+
 We are mostly following the intellectual guidance on how to develop a small embedded kernel, it is a well-documented and followed path in the embedded world.                                 I mostly follow the book "Programming Embedded Systems" by Michael Barr.
 
