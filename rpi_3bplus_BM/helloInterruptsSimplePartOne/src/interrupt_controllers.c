@@ -3,28 +3,19 @@
 
 #include "interrupt_controllers.h"
 #include "uart0.h"
+#include "timer.h"
 
 
-volatile __attribute__((aligned(2048)))  
-	void (*vectors[])(void) = {
-		[0] = default_handler,  // Synchronous EL1t
-		[1] = irq_handler,      // IRQ EL1t
-		[2] = fiq_handler,      // FIQ EL1t
-		[3] = default_handler,  // SError EL1t
-		[4] = default_handler,  // Synchronous EL1h
-		[5] = irq_handler,      // IRQ EL1h
-		[6] = fiq_handler,      // FIQ EL1h
-		[7] = default_handler,  // SError EL1h
-		[8] = default_handler,  // Synchronous EL0_64
-		[9] = irq_handler,      // IRQ EL0_64
-		[10] = fiq_handler,     // FIQ EL0_64
-		[11] = default_handler, // SError EL0_64
-		[12] = default_handler, // Synchronous EL0_32
-		[13] = irq_handler,     // IRQ EL0_32
-		[14] = fiq_handler,     // FIQ EL0_32
-		[15] = default_handler, // SError EL0_32
-	};
-
+void setup_vector_table(void* vector_base) 
+{
+	asm volatile (
+		"msr VBAR_EL1, %0\n" // Set VBAR_EL1 to the base address of the vector table
+		"isb\n"               // Instruction Synchronization Barrier to ensure the change takes effect immediately
+		:                     // No output operands
+		: "r" (vector_base)   // Input operand: the address of the vector table
+		: "memory"            // Clobber list
+	);
+}
 
 void default_handler(void)
 {
@@ -34,14 +25,42 @@ void default_handler(void)
 void irq_handler(void)
 {
 	uart0_puts("IRQ received\n");
-}
-void fiq_handler(void)
-{
-	uart0_puts("FIQ received\n");
+	unsigned int irq	= *IRQ_PENDING_1;
+
+	switch (irq)
+	{
+		case (SYSTEM_TIMER_IRQ_1):
+			handle_timer_interrupt();
+			break;
+		default:
+			uart0_puts("Unknown pending irq"); // need better print statment to include integer, hexadecimal etc...
+	}
 }
 
-void set_vbar_el1(uint64_t addr)
+
+void enable_interrupt ( void )
 {
-	asm volatile ("msr vbar_el1, %0" : : "r" (addr) : "memory");
+	asm volatile (
+		"msr daifclr, #2\n"   // Clear the I flag (IRQ enable)
+		:
+		:
+		: "memory"   // clobber list
+	);
 }
 
+void disable_interrupt( void )
+{
+	asm volatile (
+		"msr daifset, #2\n"   // Set the I flag (IRQ disable)
+		:
+		:
+		: "memory"  // clobber list
+	);
+}
+
+
+// kind of global interrupt controller
+void enable_interrupt_controller()
+{
+	*ENABLE_IRQS_1 = SYSTEM_TIMER_IRQ_1;
+}

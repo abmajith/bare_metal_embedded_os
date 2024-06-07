@@ -17,6 +17,7 @@
 #define SYS_TIMER_C3    ((volatile unsigned int*)(SYS_TIMER_BASE + 0x18))
 
 
+#define SYSTEM_TIMER_CS_IRQ_1  (1 << 1)
 
 
 // polling based delay inefficient usage of processor
@@ -25,6 +26,11 @@ void delay_microseconds(unsigned int us);
 unsigned long get_arm_system_timer();
 void delay_milliseconds(unsigned int ms);
 
+
+
+// for generating pure system timer interrupt
+void timer_init ( void );
+void handle_timer_interrupt ( void );
 
 
 #endif // TIMER_H

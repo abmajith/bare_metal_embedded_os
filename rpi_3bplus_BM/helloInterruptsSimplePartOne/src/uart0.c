@@ -3,6 +3,14 @@
 #include "uart0.h"
 #include "mailbox.h"
 
+#include <stdarg.h>
+#include <stdint.h>
+
+
+
+// for printf functions
+static const char* hex_digits = "0123456789ABCDEF";
+static char str_buffer[10];
 
 void uart0_init()
 {
@@ -86,5 +94,106 @@ void uart0_puts(char *str)
     }
     uart0_putc(*str++);
   }
+}
+
+void uart0_put_hex(uintptr_t num)
+{
+	uart0_puts("0x");
+	for (int i = 7; i >= 0; i--)
+	{
+		uart0_putc(hex_digits[(num >> (i * 4)) & 0xF]);
+	}
+}
+
+
+void uart0_put_uint(unsigned int num)
+{
+	char *p = str_buffer + 9;
+	*p = '\0';
+	for (int i = 0; i < 9; i++)	
+	{
+		str_buffer[i] = '0';
+	}
+	do
+	{
+		*--p = '0' + (num % 10);
+		num /= 10;
+	} while (num);
+	uart0_puts(str_buffer);
+}
+
+void uart0_put_int(int num)
+{
+	if (num < 0)
+	{
+		uart0_putc('-');
+		num = -num;
+	}
+	uart0_put_uint((unsigned int) num);
+}
+
+void uart0_printf(const char* fmt, ...)
+{
+	va_list args;
+	va_start(args,fmt);
+
+	while (*fmt)
+	{
+		if (*fmt == '%')
+		{
+			fmt++;
+			switch(*fmt)
+			{
+				case 'd':
+				{
+					int num = va_arg(args, int);
+					uart0_put_int(num);
+					break;
+				}
+				case 'u':
+				{
+					unsigned int num = va_arg(args, unsigned int);
+					uart0_put_uint(num);
+					break;
+				}
+				case 's':
+				{
+					char* str = va_arg(args, char*);
+					uart0_puts(str);
+					break;
+				}
+				case 'x':
+				{
+					unsigned int num = va_arg(args, unsigned int);
+					uart0_put_hex(num);
+					break;
+				}
+				case 'p':
+				{
+					void* ptr = va_arg(args, void*);
+					uart0_put_hex((uintptr_t)ptr);
+					break;
+				}
+				case 'c':
+				{
+					char c = (char)va_arg(args, int);
+					uart0_putc(c);
+					break;
+				}
+				default:
+				{
+					uart0_putc('%');
+					uart0_putc(*fmt);
+					break;
+				}
+			}
+		}
+		else 
+		{
+			uart0_putc(*fmt);
+		}
+		fmt++;
+	}
+	va_end(args);
 }
 

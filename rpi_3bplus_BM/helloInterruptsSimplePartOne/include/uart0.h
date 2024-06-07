@@ -25,6 +25,8 @@ void uart0_putc(unsigned int c);
 unsigned char uart0_getc();
 void uart0_puts(char *s);
 
+// for printf function, use it in minimal way
+void uart0_printf(const char* fmt, ...);
 
 #endif // UART0_H
 

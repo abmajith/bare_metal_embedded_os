@@ -7,12 +7,17 @@ LD := $(CROSS_COMPILE)ld
 OBJCOPY := $(CROSS_COMPILE)objcopy
 
 
-INCLUDE_HEADERS := -I include -I ../toolchain/arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf/lib/gcc/aarch64-none-elf/13.2.1/include
+INCLUDE_HEADERS := \
+			-I include \
+			-I ../toolchain/arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf/lib/gcc/aarch64-none-elf/13.2.1/include \
+			-I ../toolchain/arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf/aarch64-none-elf/include
 
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles $(INCLUDE_HEADERS)
 
 # Source files
-SRC = src/main.c src/uart0.c src/mailbox.c src/rng.c src/power.c src/timer.c src/privilege.c src/interrupt_controllers.c
+SRC = src/main.c src/uart0.c src/mailbox.c src/rng.c src/power.c src/timer.c src/privilege.c src/interrupt_controllers.c src/vector_table.c \
+			src/framebuffer.c
+
 OBJ = $(SRC:.c=.o) start.o
 
 
@@ -51,9 +56,14 @@ src/timer.o: src/timer.c
 src/privilege.o: src/privilege.c
 	$(CC) $(CFLAGS) -c src/privilege.c -o src/privilege.o
 
+src/vector_table.o: src/vector_table.S
+	$(CC) $(CFLAGS) -c src/vector_table.S -o src/vector_table.o
 
 src/interrupt_controllers.o: src/interrupt_controllers.c
 	$(CC) $(CFLAGS) -c src/interrupt_controllers.c -o src/interrupt_controllers.o
+
+src/framebuffer.o: src/framebuffer.c
+	$(CC) $(CFLAGS) -c src/framebuffer.c -o src/framebuffer.o
 
 clean:
 	rm -f *.o src/*.o  *.img *.elf >/dev/null 2>/dev/null || true

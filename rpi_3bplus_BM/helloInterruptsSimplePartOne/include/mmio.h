@@ -18,7 +18,9 @@
 #define MMIO_BASE       0x3F000000
 
 
+
 #define SYS_TIMER_BASE  (MMIO_BASE + 0x00003000)  // System Timer
+#define GIC_BASE        (MMIO_BASE + 0x0000B000)  // Generic Interrupt Controller
 #define MAILBOX_BASE    (MMIO_BASE + 0x0000B880)  // Mailbox Interface
 
 

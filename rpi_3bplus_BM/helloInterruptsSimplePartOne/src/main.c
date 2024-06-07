@@ -7,31 +7,20 @@
 #include "timer.h"
 #include "privilege.h"
 #include "interrupt_controllers.h"
-
-void convert_hex(unsigned int d);
-void kernel_main(void);
-
-void convert_hex (unsigned int d)
-{
-  unsigned int n;
-  int c;
-  for (c = 28; c >=0; c -=4)
-  {
-    n = (d >> c) & 0xF;
-    n += n >9 ? 0x37 : 0x30;
-    uart0_putc(n);
-  }
-}
+#include "framebuffer.h"
 
 
 void kernel_main(void)
 {
   uart0_init(); // init debugging serial port
+	setup_vector_table(&vector_table);
+	timer_init();
+	enable_interrupt_controller();
+	enable_interrupt();
 	rng_init();   // init the random number generation
 	
-	set_vbar_el1((uint64_t)vectors);
 
-  uart0_puts("Hello, Folks!\n This is Bare Metal Embedded DEV (using ARM64 GCC ToolChain)\n");
+  uart0_printf("Hello, Folks!\r\n This is Bare Metal Embedded DEV (using ARM64 GCC ToolChain)\r\n");
 
   // set up our mail box message buffer
   mbox_buf[0] = 8*4;                  // size of our message buffer
@@ -46,43 +35,37 @@ void kernel_main(void)
 
   if (mailbox_call(MAILBOX_M_CH_PROP))
   {
-    uart0_puts("Serial number is ");
-    convert_hex(mbox_buf[5]);
-    convert_hex(mbox_buf[6]);
-    uart0_puts("\n");
+    uart0_printf("Serial number is %u  %u \r\n", mbox_buf[5], mbox_buf[6]);
   }
   else
   {
-    uart0_puts("Unable to query Serial number!\n");
+    uart0_printf("Unable to query Serial number!\r\n");
   }
 	
-	
+
 	// testing my random numbers
 	unsigned int random_number = rng_get_random();
-	uart0_puts("Generated random number is : ");
+	uart0_printf("Generated random number is : %u \r\n\r", random_number);
 	
-	convert_hex(random_number);
-	
-	uart0_putc('\n');
-	uart0_putc('\r');
 	random_number = rng_get_random();
-	uart0_puts("another one : ");
-	convert_hex(random_number);
-	uart0_putc('\n');
-	uart0_putc('\r');
+	uart0_printf("another generated random number : %u \r\n\r", random_number);
 	
 	unsigned int el = get_current_el();
 
-	uart0_puts("Current Exception Level: ");
-	uart0_putc('0' + el);  // Assuming EL is between 0 and 3
-	uart0_puts("\n");
-	uart0_putc('\r');
+	uart0_printf("Current Exception Level: %c \n\r", '0' + el); // Assuming EL is between 0 and 3
 
 	
 
 	// testing my timer delay pooling type
-	uart0_puts("Shutting down the raspberry Pi 3B plus board...\r\n");
-	delay_milliseconds(0x10);
+	uart0_printf("Polling sleep for 0x100000...\r\n");
+	delay_milliseconds(0x100000);
+	disable_interrupt();
+	delay_milliseconds(0x100000);
+	enable_interrupt();
+	delay_milliseconds(0x100000);
+	disable_interrupt();
+	
+
 
 	// testing my power managment functions
 	/*
@@ -92,9 +75,18 @@ void kernel_main(void)
   uart0_puts("reset...\n");
   reset();
   */
-	power_off();
+	// power_off();
+	
+	// checking frame buffer initialization
+	if (framebuffer_init() == 0)
+	{
+		uart0_printf("Framebuffer initialized successfully \r\n");
+	} 
+	else 
+	{
+		uart0_printf("Failed Framebuffer Initializtion\r\n");
+	}
 
-
-  while(1) { uart0_putc(uart0_getc()); } // infinite loop
+  while(1) { asm volatile("wfi"); } // infinite loop
 }
 
