@@ -37,6 +37,11 @@ By doing this way, we consistently make the constant toolchain and firmware thro
 We are ready to create subfolders and develop typical embedded applications related to protocols and OS modules.
 Here we have a few test cases, that will progress day by day!
 
+
+## Getting Know the Raspberry Pi 3b plus Hardware
+
+In order to understand and test in real board, we need ofcourse the raspberr pi 3b plus board and rs232 USB cable.
+
 To start our embedded OS development process, we will first look into two different 
 (*ras pi 3b+, Broadcom 2837 hardware* provides this mechanism using *UART0,UART1*)
 ways to establish a primitive serial console communication between the host (our personal computer) 
