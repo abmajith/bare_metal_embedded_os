@@ -68,3 +68,9 @@ int framebuffer_init()
 		return 1; 
 	}
 }
+
+
+void set_pixel(char *data, char pixel[])
+{
+	
+}

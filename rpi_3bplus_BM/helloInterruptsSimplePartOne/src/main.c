@@ -76,16 +76,6 @@ void kernel_main(void)
   reset();
   */
 	// power_off();
-	
-	// checking frame buffer initialization
-	if (framebuffer_init() == 0)
-	{
-		uart0_printf("Framebuffer initialized successfully \r\n");
-	} 
-	else 
-	{
-		uart0_printf("Failed Framebuffer Initializtion\r\n");
-	}
 
   while(1) { asm volatile("wfi"); } // infinite loop
 }
