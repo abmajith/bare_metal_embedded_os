@@ -1,6 +1,8 @@
 # Bare Metal Embedded OS
 
 
+
+
 The main goal of this repo is to construct an embedded OS either bare metal 
 or hand-made embedded Linux and perform various applications. 
 To discuss and understand the topic of embedded OS,
