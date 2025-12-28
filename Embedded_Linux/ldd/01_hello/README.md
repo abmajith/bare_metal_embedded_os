@@ -12,3 +12,12 @@ make
 
 make clean
 ```
+
+
+## Check SBC board
+```bash
+cd home
+insmod hello.ko
+# will see some greeting words, check the code to see what exactly it will print
+rmmod hello.ko
+```
